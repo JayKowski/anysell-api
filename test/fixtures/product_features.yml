@@ -1,0 +1,9 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  feature_name: MyString
+  feature_value: MyString
+
+two:
+  feature_name: MyString
+  feature_value: MyString
