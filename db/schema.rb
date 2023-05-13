@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_05_13_183907) do
+ActiveRecord::Schema[7.0].define(version: 2023_05_13_184745) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -19,6 +19,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_13_183907) do
     t.text "caption"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["user_id"], name: "index_pictures_on_user_id"
   end
 
   create_table "product_features", force: :cascade do |t|
@@ -42,6 +44,35 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_13_183907) do
     t.text "description"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["user_id"], name: "index_products_on_user_id"
+  end
+
+  create_table "products_features", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "product_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["product_id"], name: "index_products_features_on_product_id"
+    t.index ["user_id"], name: "index_products_features_on_user_id"
+  end
+
+  create_table "products_pictures", force: :cascade do |t|
+    t.bigint "picture_id", null: false
+    t.bigint "product_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["picture_id"], name: "index_products_pictures_on_picture_id"
+    t.index ["product_id"], name: "index_products_pictures_on_product_id"
+  end
+
+  create_table "products_tags", force: :cascade do |t|
+    t.bigint "product_tag_id", null: false
+    t.bigint "product_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["product_id"], name: "index_products_tags_on_product_id"
+    t.index ["product_tag_id"], name: "index_products_tags_on_product_tag_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -56,4 +87,12 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_13_183907) do
     t.datetime "updated_at", null: false
   end
 
+  add_foreign_key "pictures", "users"
+  add_foreign_key "products", "users"
+  add_foreign_key "products_features", "products"
+  add_foreign_key "products_features", "users"
+  add_foreign_key "products_pictures", "pictures"
+  add_foreign_key "products_pictures", "products"
+  add_foreign_key "products_tags", "product_tags"
+  add_foreign_key "products_tags", "products"
 end
