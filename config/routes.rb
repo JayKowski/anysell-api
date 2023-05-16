@@ -3,4 +3,9 @@ Rails.application.routes.draw do
 
   # Defines the root path route ("/")
   # root "articles#index"
+  scope '/v1' do
+    post '/sign_up', to: 'v1/users#create'
+    get '/login', to: 'v1/users#login'
+    post '/edit', to: 'v1/users#update'
+  end
 end
