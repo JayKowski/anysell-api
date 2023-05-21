@@ -6,7 +6,7 @@ class V1::UsersController < ApplicationController
 
     def login
         @user = User.find_by(email_address: params[:email_address])
-        if @user
+        if @user && @user.authenticate(params[:password])
             @token = encode_token({user_id: @user.id})
             render json: {
                 success: true,
@@ -21,7 +21,7 @@ class V1::UsersController < ApplicationController
                 success: false,
                 message: "user not found",
                 data: nil
-            }, status: @user.errors.status
+            }, status: :not_found
         end
     end
 
@@ -50,7 +50,7 @@ class V1::UsersController < ApplicationController
         if @user.update!(new_user_params)
             render json: {
                 success: true,
-                message: "your changes have been successfully saved!",
+                message: "user details changed successfully!",
                 data: {
                     user: UserSerializer.new(@user)
                 }
