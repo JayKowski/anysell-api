@@ -3,9 +3,16 @@ Rails.application.routes.draw do
 
   # Defines the root path route ("/")
   # root "articles#index"
-  scope '/v1' do
-    post '/sign_up', to: 'v1/users#create'
+  scope '/api/v1' do
+    #  U S E R S
     get '/login', to: 'v1/users#login'
-    post '/edit', to: 'v1/users#update'
+    post '/sign_up', to: 'v1/users#create'
+    post '/edit_user', to: 'v1/users#update'
+
+    #  P R O D U C T S
+    get '/all_products', to: 'v1/products#index'
+    get '/get_product', to: 'v1/products#show'
+    post '/add_product', to: 'v1/products#create'
+    delete '/delete_product', to: 'v1/products#destroy'
   end
 end
