@@ -1,0 +1,15 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  ref_number: MyString
+  order_status: MyString
+  total_price: 1.5
+  payment_status: MyString
+  user: one
+
+two:
+  ref_number: MyString
+  order_status: MyString
+  total_price: 1.5
+  payment_status: MyString
+  user: two
