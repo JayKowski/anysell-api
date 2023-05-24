@@ -35,6 +35,12 @@ class V1::ProductsController < ApplicationController
     end
 
     def update
+        @product = Product.update_product(params[:product])
+        render json: {
+            success: true,
+            message: 'product updated successfully',
+            data: @product
+        }, status: :ok
     end
 
     def destroy
