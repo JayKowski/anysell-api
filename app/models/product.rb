@@ -2,15 +2,15 @@ class Product < ApplicationRecord
     has_many :pictures, dependent: :destroy
     has_many :products_tag, dependent: :destroy
     has_many :products_feature, dependent: :destroy
-    has_many :tags, class_name: 'Tag', through: :products_tag, dependent: :destroy
-    has_many :features, class_name: 'Feature',through: :products_feature, dependent: :destroy
+    has_many :tags, class_name: 'Tag', through: :products_tag
+    has_many :features, class_name: 'Feature',through: :products_feature
 
     before_destroy lambda { |product| delete_product_children(product) }
 
     # S C O P E S
     scope :child_pictures, -> (product_id) { joins(:pictures).where(pictures: { product_id: product_id }) } 
     scope :child_tags, -> (product_id) { joins(:products_tag).where(products_tag: { product_id: product_id }) }
-    scope :child_features, -> (product_id) { joins(:products_feature).where(products_feature: { product_id: product_id }) }
+    scope :child_features, -> (product_id) { joins(:features).where(features: { product_id: product_id }).select('features.*') }
 
     def self.create_product(product_obj, user)
         @product = { **product_obj["attributes"].as_json, "user_id" => user.id }
@@ -58,26 +58,48 @@ class Product < ApplicationRecord
         end
     end
 
+    def self.update_product(product)
+        @product = Product.update!({
+            name: product[:attributes][:name],
+            category: product[:attributes][:category],
+            price: product[:attributes][:price],
+            condition: product[:attributes][:condition],
+            description: product[:attributes][:description]
+        })
+
+        if @product
+            @picture = Picture.update!({
+                link_url: product[:pictures][:link_url],
+                caption: product[:pictures[:caption]]
+            })
+        else
+            return nil
+        end
+
+
+        @product
+        # @product = Product.update!(product.attributes)
+    end
+
 
     private
     
     def delete_product_children(product)
-        @child_pictures = Product.child_pictures(product.id)
-        @child_tags = Product.child_tags(product.id)
-        @child_features = Product.child_features(product.id)
-
-        @child_pictures.destroy_all
-        @child_tags.destroy_all
-        @child_features.destroy_all
- 
+        product.tags.destroy_all
+        product.features.destroy_all
+        product.pictures.destroy_all
+        # 
+        product.products_tag.destroy_all
+        product.products_feature.destroy_all
+        
     end
-
+    
     def self.fetch_product_attachments(product)
         @product_obj = Hash.new
 
-        @tags = Product.child_tags(product.id)
-        @features = Product.child_features(product.id)
-        @pictures = Product.child_pictures(product.id)
+        @tags = product.tags
+        @features = product.features
+        @pictures = product.pictures
 
         @product_obj.merge!({attributes: product}).merge!({tags: @tags}).merge!({features: @features}).merge!({pictures: @pictures})
     end
