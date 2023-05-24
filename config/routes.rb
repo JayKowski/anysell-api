@@ -14,5 +14,10 @@ Rails.application.routes.draw do
     get '/get_product', to: 'v1/products#show'
     post '/add_product', to: 'v1/products#create'
     delete '/delete_product', to: 'v1/products#destroy'
+    put '/update_product', to: "v1/products#update"
+
+    # O R D E R S
+    post '/new_order', to: 'v1/orders#create'
+    delete '/delete_order', to: 'v1/orders#destroy'
   end
 end
